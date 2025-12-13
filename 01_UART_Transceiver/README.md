@@ -28,6 +28,6 @@ The design was verified using a self-checking testbench in Questa Sim. The wavef
 * **Overview:** The green waveforms show the serial bit stream including Start bit, Data bits, and Stop bit.
 * **Success:** The transcript confirms `SUCCESS: Received 0x55`, proving the loopback test passed.
 
-![UART Simulation Result 1](UART%20Simulation%20Waveform.jpg)
+![UART Simulation Result 1](UART%20Simulation%20Waveform.png)
 
-![UART Simulation Result 2](UART%20Simulation%20Waveform%202.jpg)
+![UART Simulation Result 2](UART%20Simulation%20Waveform%202.png)
