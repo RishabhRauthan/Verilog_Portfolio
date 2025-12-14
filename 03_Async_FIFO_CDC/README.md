@@ -24,11 +24,11 @@ The design was verified using a dual-clock simulation to stress-test the CDC log
 **1. Functional Verification**
 The waveform below confirms data integrity. The transcript highlights the successful burst write of test vectors (`0xAA`, `0xBB`, `0xCC`) and their correct retrieval in the read domain. The `[PASS]` messages confirm the logic is functionally correct.
 
-![Functional Verification](fifo_cdc_verification.jpg)
+![Functional Verification](fifo_cdc_verification.png)
 
 **2. Timing & CDC Analysis (Zoomed)**
 This detailed view demonstrates the asynchronous relationship.
 * **Clock Mismatch:** `wclk` (Top) runs at 2.5x the speed of `rclk` (Bottom).
 * **Stable Transfer:** Despite the speed difference, data `0xAA` is successfully latched and available on the read bus, proving the synchronizers are working effectively.
 
-![CDC Timing Detail](fifo_cdc_timing.jpg)
+![CDC Timing Detail](fifo_cdc_timing.png)
