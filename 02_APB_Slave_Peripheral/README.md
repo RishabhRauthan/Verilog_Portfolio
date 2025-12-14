@@ -23,12 +23,12 @@ The testbench validates the design by simulating a Bus Master performing the fol
 ### Simulation Waveforms
 The waveforms below demonstrate the successful execution of the protocol.
 
-**1. Write Transaction (SETUP & ACCESS Phases)**
-The screenshot below highlights the Write cycle. Note the transition from **SETUP** (`PSEL=1`, `PENABLE=0`) to **ACCESS** (`PSEL=1`, `PENABLE=1`), latching the data `0xDEAD_BEEF`.
+**1. Write Transactions**
+The screenshot below highlights the Write cycle. You can see the transition where `PSEL` goes High and `PWDATA` is latched (e.g., `0xDEADBEEF`).
 
-![APB Write Transaction](YOUR_IMAGE_NAME_1.jpg)
+![APB Write Transaction](APB_Slave_Simulation_Waveform.jpg)
 
-**2. Read Transaction & Data Integrity**
-This waveform shows the Read cycle. The Slave correctly drives `PRDATA` with the stored value, and the transcript confirms the data match with `[PASS]`.
+**2. Read Transactions & Verification**
+This waveform shows the Read cycle. The Slave correctly drives `PRDATA` with the stored value (`deadbeef`), and the transcript confirms the match with `[PASS]`.
 
-![APB Read Transaction](YOUR_IMAGE_NAME_2.jpg)
+![APB Read Transaction](APB_Slave_Simulation_Waveform%202.png)
