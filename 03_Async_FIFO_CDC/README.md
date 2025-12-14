@@ -1,21 +1,34 @@
 # Asynchronous FIFO (Clock Domain Crossing)
 
-## Overview
-This project implements a parameterizable **Asynchronous FIFO** to safely transfer data between two different clock domains (100MHz Write / 40MHz Read). It utilizes **Gray Code synchronization** to prevent metastability and ensure reliable Empty/Full flag generation.
+## Project Overview
+This project implements a parameterizable **Asynchronous FIFO** designed to safely transfer data between two independent clock domains operating at different frequencies. It addresses the critical challenge of **Clock Domain Crossing (CDC)** by utilizing **Gray Code pointers** and **2-stage synchronizers** to prevent metastability and ensure glitch-free flag generation.
 
 ## Key Features
-- **Dual-Clock Support:** Handles completely asynchronous Read/Write clocks.
-- **Gray Code Pointers:** Implements Binary-to-Gray and Gray-to-Binary conversion for safe CDC (Clock Domain Crossing).
-- **2-Stage Synchronizers:** Mitigates metastability when passing pointers between domains.
-- **Robust Logic:** Pessimistic Full/Empty generation prevents overflow/underflow.
+- **Dual-Clock Support:** safely handles completely asynchronous Write (`wclk`) and Read (`rclk`) domains.
+- **CDC Safety:** Implements **Binary-to-Gray** conversion for address pointers to ensure only 1-bit changes per clock cycle, eliminating multi-bit synchronization errors.
+- **Robust Synchronization:** Uses **2-Stage Flip-Flop Synchronizers** to pass pointers between domains.
+- **Pessimistic Flag Generation:** Generates `Full` and `Empty` flags in the source domain to guarantee no overflow or underflow occurs.
+- **Parametrized Design:** Configurable Data Width and FIFO Depth (Default: 8-bit Data, 16-slot Depth).
 
 ## File Structure
-- `rtl/async_fifo.sv`: Top-level wrapper containing the Memory, Synchronizers, and Pointer Logic modules.
-- `tb/tb_async_fifo.sv`: Testbench generating 100MHz and 40MHz clocks to verify data integrity.
+* **`rtl/async_fifo.sv`**: The synthesizable RTL design containing the dual-port memory, pointer logic, and synchronizers.
+* **`tb/tb_async_fifo.sv`**: A self-checking SystemVerilog testbench that generates dual clocks to verify data integrity.
 
-## Simulation
-The testbench validates:
-1. **Burst Write:** Filling the FIFO depth (16 slots) at 100MHz.
-2. **Safe Full Flag:** Ensuring `wfull` asserts correctly.
-3. **Slow Read:** Reading data out at 40MHz.
-4. **Data Integrity:** Ensuring Data In matches Data Out exactly.
+## Simulation & Verification
+The design was verified using a dual-clock simulation to stress-test the CDC logic.
+* **Write Domain:** 100 MHz
+* **Read Domain:** 40 MHz
+
+### Waveform Analysis
+
+**1. Functional Verification**
+The waveform below confirms data integrity. The transcript highlights the successful burst write of test vectors (`0xAA`, `0xBB`, `0xCC`) and their correct retrieval in the read domain. The `[PASS]` messages confirm the logic is functionally correct.
+
+![Functional Verification](fifo_cdc_verification.jpg)
+
+**2. Timing & CDC Analysis (Zoomed)**
+This detailed view demonstrates the asynchronous relationship.
+* **Clock Mismatch:** `wclk` (Top) runs at 2.5x the speed of `rclk` (Bottom).
+* **Stable Transfer:** Despite the speed difference, data `0xAA` is successfully latched and available on the read bus, proving the synchronizers are working effectively.
+
+![CDC Timing Detail](fifo_cdc_timing.jpg)
