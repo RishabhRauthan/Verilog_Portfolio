@@ -26,7 +26,7 @@ The waveforms below demonstrate the successful execution of the protocol.
 **1. Write Transactions**
 The screenshot below highlights the Write cycle. You can see the transition where `PSEL` goes High and `PWDATA` is latched (e.g., `0xDEADBEEF`).
 
-![APB Write Transaction](APB_Slave_Simulation_Waveform.jpg)
+![APB Write Transaction](APB_Slave_Simulation_Waveform.png)
 
 **2. Read Transactions & Verification**
 This waveform shows the Read cycle. The Slave correctly drives `PRDATA` with the stored value (`deadbeef`), and the transcript confirms the match with `[PASS]`.
