@@ -22,4 +22,4 @@ The simulation below validates a successful transaction of byte `0x3C`.
 2.  **Data Serialization:** The `MOSI` line shifts out the data (`00111100`) bit-by-bit.
 3.  **Loopback Verification:** Since MOSI is tied to MISO, the controller receives its own data. The `data_out` register correctly updates to `0x3C` at the end of the transaction, confirming that both the Transmit and Receive paths are functional.
 
-![SPI Simulation Waveform](spi_simulation_wave.ppg)
+![SPI Simulation Waveform](spi_simulation_wave.png)
