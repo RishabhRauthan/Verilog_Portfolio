@@ -1,20 +1,25 @@
-# Configurable SPI Master Controller
+# SPI Master Controller
 
-## Overview
-This project implements a generic **Serial Peripheral Interface (SPI) Master** controller. It is designed to interface with various slave devices (Sensors, Flash, SD Cards) by supporting configurable Clock Polarity (CPOL) and Clock Phase (CPHA).
+## Project Overview
+This project implements a synthesizable **SPI (Serial Peripheral Interface) Master** controller using SystemVerilog. It is designed to facilitate high-speed, synchronous serial communication with off-chip peripherals such as sensors, Flash memory, and SD cards. The core logic is built around a robust Finite State Machine (FSM) to ensure precise timing and protocol compliance.
 
 ## Key Features
-- **All 4 SPI Modes:** Supports Modes 0, 1, 2, and 3 via `cpol` and `cpha` input ports.
-- **Configurable Speed:** Internal clock divider (`CLK_DIV`) to adjust SCLK frequency relative to the system clock.
-- **FSM Based:** Robust Finite State Machine handles Chip Select (CS_N) assertion, serialization, and sampling.
-- **Loopback Verified:** Validated using a MOSI-to-MISO loopback testbench.
+- **Protocol Compliance:** Implements standard 4-wire SPI (MOSI, MISO, SCLK, CS_N).
+- **Mode 0 Operation:** Configured for Idle-Low Clock (`CPOL=0`) and Rising-Edge Sampling (`CPHA=0`), the most common industry standard.
+- **Configurable Speed:** Parametrized Clock Divider (`CLK_DIV`) allows precise tuning of the SCLK frequency derived from the system clock.
+- **Robust Architecture:** Uses a 3-State FSM (IDLE $\to$ TRANSFER $\to$ FINISH) to handle Chip Select assertion, data serialization, and sampling safely.
 
 ## File Structure
-- `rtl/spi_master.sv`: The SPI Master core logic with configurable timing.
-- `tb/tb_spi.sv`: Testbench verifying Mode 0 and Mode 3 transmission.
+- **`rtl/spi_master.sv`**: The synthesizable RTL core implementing shift registers, clock generation, and control logic.
+- **`tb/tb_spi_master.sv`**: A self-checking testbench that performs loopback tests to verify bidirectional data integrity.
 
-## Simulation
-The testbench performs a **Loopback Test** (connecting MOSI to MISO):
-1. Configures the Master for **Mode 0** (Idle Low, Sample 1st Edge) and sends `0xA5`.
-2. Configures the Master for **Mode 3** (Idle High, Sample 2nd Edge) and sends `0x3C`.
-3. Verifies that the received data matches the transmitted data.
+## Simulation & Verification
+The design was verified using a **Loopback Testbench**, where the Master's MOSI (Output) pin is wired directly to its MISO (Input) pin to simulate a perfect Slave device.
+
+### Waveform Analysis
+The simulation below validates a successful transaction of byte `0x3C`.
+1.  **Transaction Start:** `CS_N` asserts (Low) and `SCLK` begins toggling.
+2.  **Data Serialization:** The `MOSI` line shifts out the data (`00111100`) bit-by-bit.
+3.  **Loopback Verification:** Since MOSI is tied to MISO, the controller receives its own data. The `data_out` register correctly updates to `0x3C` at the end of the transaction, confirming that both the Transmit and Receive paths are functional.
+
+![SPI Simulation Waveform](spi_simulation_wave.jpg)
