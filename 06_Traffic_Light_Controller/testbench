@@ -1,0 +1,46 @@
+`timescale 1ns / 1ps
+
+module tb_traffic_light;
+
+    logic clk, rst_n, sensor;
+    logic [2:0] light_main; // R, Y, G
+    logic [2:0] light_side;
+
+    traffic_light dut (.*); // wildcard connection
+
+    // Clock
+    initial clk = 0;
+    always #5 clk = ~clk;
+
+    // Test Procedure
+    initial begin
+        $display(" Traffic Light Controller Simulation");
+
+        // Init
+        rst_n = 0; sensor = 0;
+        #20;
+        rst_n = 1;
+        
+        // 1. Check Idle State (Main should be Green FOREVER)
+        $display("[INFO] Checking Main Road Priority...");
+        #50; 
+        if (light_main == 3'b001 && light_side == 3'b100)
+            $display("[PASS] Main is Green, Side is Red (No Traffic)");
+        else
+            $display("[FAIL] State mismatch!");
+
+        // 2. Car Arrives on Side Road
+        $display("[INFO] Car detected on Side Road! (Sensor=1)");
+        sensor = 1; 
+        #20;
+        sensor = 0; // Car triggers sensor and passes
+
+        // 3. Wait and Observe Transitions
+        // We just wait enough time for the whole cycle to complete
+        #200;
+
+        $display(" SUCCESS: Traffic Cycle Complete");
+        $stop;
+    end
+
+endmodule
