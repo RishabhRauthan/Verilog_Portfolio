@@ -5,7 +5,7 @@ This project implements a **Sensor-Based Traffic Light Controller** using a robu
 
 This logic prevents the "empty intersection" problem, where a busy highway is stopped for a side street with no cars.
 
-## Real-World Integration
+## Real-World Integration :
 How does this Verilog code control a physical intersection? Here is the hardware mapping:
 
 1.  **The "Sensor" Input (Inductive Loops):**
