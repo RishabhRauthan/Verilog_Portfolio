@@ -27,10 +27,6 @@ How does this Verilog code control a physical intersection? Here is the hardware
 -   **Automatic Reset:** Once the Side Road traffic is cleared (or the fixed time window expires), the system automatically reverts priority to the Main Road.
 -   **Parametrized Timing:** State durations are defined using SystemVerilog parameters (`T_YEL`, `T_SIDE`), allowing for easy calibration of light timings.
 
-## File Structure
-| **`rtl/traffic_light.sv`** | The synthesizable RTL core containing the FSM and timer logic. |
-| **`tb/tb_traffic_light.sv`** | A self-checking testbench that simulates vehicle arrival events. |
-
 ## Simulation & Verification
 The design was verified using a dynamic testbench to validate the sensor-trigger logic.
 
