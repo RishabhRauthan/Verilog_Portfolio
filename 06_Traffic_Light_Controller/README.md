@@ -38,3 +38,27 @@ The screenshot below demonstrates a complete traffic control cycle:
 4.  **Auto-Return:** After the timer counts up to `T_SIDE`, the controller forces the Side Road to Yellow $\to$ Red and returns the Main Road to Green.
 
 ![Traffic Light Waveform](traffic_light_sim_waveform.png)
+
+## Micro-Architecture
+```mermaid
+graph TD
+    %% Inputs
+    CLK[clk] --> FSM
+    RST[rst_n] --> FSM
+    SENSOR[sensor] --> FSM
+
+    %% Internal Logic Subsystem
+    subgraph Controller [FSM Controller Logic]
+        direction TB
+        FSM[State Machine<br/>(4 States)] -->|Enable/Reset| TIMER[Timer Counter]
+        TIMER -->|Time Done| FSM
+    end
+
+    %% Outputs
+    FSM -->|Control| MAIN[light_main<br/>(3-bit)]
+    FSM -->|Control| SIDE[light_side<br/>(3-bit)]
+
+    %% Styling for a professional look
+    style FSM fill:#f9f,stroke:#333,stroke-width:2px
+    style TIMER fill:#ccf,stroke:#333,stroke-width:2px
+    style SENSOR fill:#ff9,stroke:#333,stroke-width:1px
