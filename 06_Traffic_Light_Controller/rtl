@@ -1,0 +1,91 @@
+module traffic_light (
+    input  logic clk,       // System Clock
+    input  logic rst_n,     // Active Low Reset
+    input  logic sensor,    // 1 = Car waiting on Side Road
+    
+    output logic [2:0] light_main, // {R, Y, G}
+    output logic [2:0] light_side  // {R, Y, G}
+);
+
+    // FSM States
+    typedef enum logic [1:0] {
+        MAIN_GRN = 2'b00, // Main Green, Side Red (Idle State)
+        MAIN_YEL = 2'b01, // Main Yellow, Side Red
+        SIDE_GRN = 2'b10, // Main Red, Side Green
+        SIDE_YEL = 2'b11  // Main Red, Side Yellow
+    } state_t;
+
+    state_t state, next_state;
+
+    // Timer Signals
+    logic [3:0] timer;
+    logic       timer_rst;
+    
+    // Timing Parameters
+    parameter T_YEL = 4'd2;  // Yellow lasts 2 cycles
+    parameter T_SIDE = 4'd6; // Side Green lasts 6 cycles
+
+    // 1. Timer Logic
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)       timer <= 0;
+        else if (timer_rst) timer <= 0;
+        else              timer <= timer + 1;
+    end
+
+    // 2. State Transition Logic (Combinational)
+    always_comb begin
+        next_state = state; // Default: Stay
+        timer_rst  = 0;     // Default: Count
+
+        case (state)
+            MAIN_GRN: begin
+                // Stay Green UNLESS sensor detects car
+                if (sensor) begin
+                    next_state = MAIN_YEL;
+                    timer_rst  = 1; // Reset timer for next state
+                end
+            end
+
+            MAIN_YEL: begin
+                // Wait for Yellow time, then turn Red
+                if (timer == T_YEL) begin
+                    next_state = SIDE_GRN;
+                    timer_rst  = 1;
+                end
+            end
+
+            SIDE_GRN: begin
+                // Side road gets fixed time, then back to Main
+                if (timer == T_SIDE) begin
+                    next_state = SIDE_YEL;
+                    timer_rst  = 1;
+                end
+            end
+
+            SIDE_YEL: begin
+                // Wait for Yellow time, then back to Main Green
+                if (timer == T_YEL) begin
+                    next_state = MAIN_GRN;
+                    timer_rst  = 1;
+                end
+            end
+        endcase
+    end
+
+    // 3. State & Output Logic
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) state <= MAIN_GRN;
+        else        state <= next_state;
+    end
+
+    // Output Decoder (R=Bit2, Y=Bit1, G=Bit0)
+    always_comb begin
+        case (state)
+            MAIN_GRN: begin light_main = 3'b001; light_side = 3'b100; end // G / R
+            MAIN_YEL: begin light_main = 3'b010; light_side = 3'b100; end // Y / R
+            SIDE_GRN: begin light_main = 3'b100; light_side = 3'b001; end // R / G
+            SIDE_YEL: begin light_main = 3'b100; light_side = 3'b010; end // R / Y
+        endcase
+    end
+
+endmodule
