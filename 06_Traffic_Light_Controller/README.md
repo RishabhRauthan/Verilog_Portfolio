@@ -40,6 +40,7 @@ The screenshot below demonstrates a complete traffic control cycle:
 ![Traffic Light Waveform](traffic_light_sim_waveform.png)
 
 ## Micro-Architecture
+
 ```mermaid
 graph TD
     %% Inputs
@@ -48,17 +49,17 @@ graph TD
     SENSOR[sensor] --> FSM
 
     %% Internal Logic Subsystem
-    subgraph Controller [FSM Controller Logic]
+    subgraph Controller
         direction TB
-        FSM[State Machine<br/>(4 States)] -->|Enable/Reset| TIMER[Timer Counter]
+        FSM[State Machine] -->|Enable| TIMER[Timer Counter]
         TIMER -->|Time Done| FSM
     end
 
     %% Outputs
-    FSM -->|Control| MAIN[light_main<br/>(3-bit)]
-    FSM -->|Control| SIDE[light_side<br/>(3-bit)]
+    FSM -->|Control| MAIN[light_main]
+    FSM -->|Control| SIDE[light_side]
 
-    %% Styling for a professional look
+    %% Styling
     style FSM fill:#f9f,stroke:#333,stroke-width:2px
     style TIMER fill:#ccf,stroke:#333,stroke-width:2px
     style SENSOR fill:#ff9,stroke:#333,stroke-width:1px
