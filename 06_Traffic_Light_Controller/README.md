@@ -41,6 +41,7 @@ The screenshot below demonstrates a complete traffic control cycle:
 
 ## Micro-Architecture
 
+```mermaid
 graph LR
 
     classDef inputs fill:#F4D03F,stroke:#F1C40F,stroke-width:2px,color:#000,font-weight:bold;
