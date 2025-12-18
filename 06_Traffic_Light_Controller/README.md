@@ -41,25 +41,40 @@ The screenshot below demonstrates a complete traffic control cycle:
 
 ## Micro-Architecture
 
-```mermaid
-graph TD
-    %% Inputs
-    CLK[clk] --> FSM
-    RST[rst_n] --> FSM
-    SENSOR[sensor] --> FSM
+graph LR
 
-    %% Internal Logic Subsystem
-    subgraph Controller
+    classDef inputs fill:#F4D03F,stroke:#F1C40F,stroke-width:2px,color:#000,font-weight:bold;
+    classDef outputs fill:#E67E22,stroke:#D35400,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef logic fill:#8E44AD,stroke:#9B59B6,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef timer fill:#3498DB,stroke:#2980B9,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef container fill:none,stroke:#BDC3C7,stroke-width:2px,stroke-dasharray: 5 5,color:#fff;
+
+
+    CLK[clk]:::inputs
+    RST[rst_n]:::inputs
+    SENS[sensor]:::inputs
+
+
+    subgraph Controller_Unit [Controller]
         direction TB
-        FSM[State Machine] -->|Enable| TIMER[Timer Counter]
-        TIMER -->|Time Done| FSM
+        FSM[State Machine]:::logic
+        TMR[Timer Counter]:::timer
     end
 
-    %% Outputs
-    FSM -->|Control| MAIN[light_main]
-    FSM -->|Control| SIDE[light_side]
+    L_MAIN[light_main]:::outputs
+    L_SIDE[light_side]:::outputs
 
-    %% Styling
-    style FSM fill:#f9f,stroke:#333,stroke-width:2px
-    style TIMER fill:#ccf,stroke:#333,stroke-width:2px
-    style SENSOR fill:#ff9,stroke:#333,stroke-width:1px
+    CLK --> FSM
+    CLK --> TMR
+    RST --> FSM
+    RST --> TMR
+
+    SENS -- Trigger --> FSM
+    FSM -- Enable --> TMR
+    TMR -- Time Done --> FSM
+    
+
+    FSM -- Control --> L_MAIN
+    FSM -- Control --> L_SIDE
+
+    class Controller_Unit container
