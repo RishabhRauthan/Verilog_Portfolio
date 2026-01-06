@@ -61,7 +61,7 @@ graph LR
 ## Technical Specifications
 
 | Feature | Specification |
-| --- | --- |
+
 | **HDL Standard** | Verilog-2001 (IEEE 1364-2001) |
 | **Clock Domain** | Single Synchronous Clock |
 | **Throughput** | 1 Pixel / Clock Cycle |
