@@ -1,13 +1,3 @@
-```markdown
-# FPGA-Based Real-Time Sobel Edge Detection Accelerator
-
-## Project Overview
-This repository contains a synthesizable Verilog implementation of a Sobel Edge Detection accelerator designed for high-throughput image processing applications. The architecture utilizes a fully pipelined systolic array approach to perform 2D convolution on streaming pixel data, enabling real-time edge extraction without frame buffering.
-
-The design targets FPGA platforms (Xilinx/Intel) and features a resource-efficient circular line buffer to minimize on-chip memory usage. Verification is performed via a bit-accurate Python-hardware co-simulation environment.
-
-## System Architecture
-The core architecture operates on a 1-pixel-per-clock basis. Incoming pixel streams are stored in a dual-port Block RAM (BRAM) line buffer to align vertical data columns. A 3x3 sliding window feeds the pipelined Sobel convolution kernel, which calculates gradient magnitude and applies binary thresholding.
 
 ```mermaid
 graph LR
