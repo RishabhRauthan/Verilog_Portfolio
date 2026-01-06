@@ -1,8 +1,24 @@
+# Real-Time Sobel Edge Detection Accelerator
+
+![Language](https://img.shields.io/badge/language-Verilog-blue)
+![Platform](https://img.shields.io/badge/platform-FPGA%20%2F%20ASIC-orange)
+![Verification](https://img.shields.io/badge/verification-Python%20Co--Sim-green)
+![Status](https://img.shields.io/badge/status-In%20Development-yellow)
+
+## Project Overview
+This project implements a high-throughput, pipelined hardware accelerator for **real-time edge detection** using the Sobel operator. 
+Designed in **Verilog HDL**, the architecture is optimized for FPGA implementation, utilizing **inferred Block RAMs (BRAM)** for line buffering and efficient arithmetic logic for convolution.
+The system processes video data streams without CPU intervention, demonstrating advanced digital design concepts including **circular memory buffering**, **systolic arrays**, and **Python-hardware co-simulation**.
+
+
+
+
+
+## Micro-Architecture
+
 ```mermaid
 flowchart LR
-    %% ==========================================
     %% 1. STYLING DEFINITIONS
-    %% ==========================================
     classDef input fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
     classDef memory fill:#d1e7dd,stroke:#0f5132,stroke-width:2px
     classDef reg fill:#e1f5fe,stroke:#01579b,stroke-width:2px
