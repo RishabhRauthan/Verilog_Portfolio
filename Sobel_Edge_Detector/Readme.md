@@ -1,62 +1,91 @@
-
 ```mermaid
-graph LR
-    %% Definitions and Styles
-    classDef host fill:#eeeeee,stroke:#333333,stroke-width:1px;
-    classDef bram fill:#d1e7dd,stroke:#0f5132,stroke-width:2px;
-    classDef logic fill:#e2e3e5,stroke:#41464b,stroke-width:2px;
-    classDef stream fill:#fff3cd,stroke:#856404,stroke-width:2px;
+flowchart LR
+ subgraph Block_A["Block A: Line Buffer Unit (Memory)"]
+    direction TB
+        WP["Write Pointer (Counter)"]
+        RAM0["Line RAM 0 (Row N-1)"]
+        RAM1["Line RAM 1 (Row N-2)"]
+  end
+ subgraph Row2["Row 2 (Current)"]
+    direction RL
+        p8["Reg p8"]
+        p7["Reg p7"]
+        p6["Reg p6"]
+  end
+ subgraph Row1["Row 1 (Previous)"]
+    direction RL
+        p5["Reg p5"]
+        p4["Reg p4"]
+        p3["Reg p3"]
+  end
+ subgraph Row0["Row 0 (Oldest)"]
+    direction RL
+        p2["Reg p2"]
+        p1["Reg p1"]
+        p0["Reg p0"]
+  end
+ subgraph Block_B["Block B: Sliding Window Logic (Registers)"]
+    direction TB
+        Row2
+        Row1
+        Row0
+  end
+ subgraph Block_C["Block C: Sobel Core (Math)"]
+    direction LR
+        Gx["Gx Adder Tree"]
+        Gy["Gy Adder Tree"]
+        AbsX["Abs(Gx)"]
+        AbsY["Abs(Gy)"]
+        Sum["Adder (Sum)"]
+        Thresh["Threshold Comparator"]
+  end
+    WP -.-> RAM0 & RAM1
+    p8 --> p7 & Gx & Gy
+    p7 --> p6 & Gx & Gy
+    p5 --> p4 & Gx & Gy
+    p4 --> p3 & Gx & Gy
+    p2 --> p1 & Gx & Gy
+    p1 --> p0 & Gx & Gy
+    PI["Pixel In (8-bit)"] --> RAM0 & p8
+    RAM0 --> RAM1 & p5
+    RAM1 --> p2
+    p0 --> Gx & Gy
+    p3 --> Gx & Gy
+    p6 --> Gx & Gy
+    Gx --> AbsX
+    Gy --> AbsY
+    AbsX --> Sum
+    AbsY --> Sum
+    Sum --> Thresh
+    Thresh --> PO["Pixel Out (1-bit Edge)"]
+    EN["Enable Signal"] -.-> WP & p8 & p5 & p2
 
-    %% Host Environment
-    subgraph Host_PC [Host Verification Environment]
-        RawImg[Raw Image Input]:::host
-        PyPre[Python Pre-processor]:::host
-        PyPost[Python Post-processor]:::host
-        FinalImg[Processed Image]:::host
-    end
-
-    %% Simulation Boundary
-    HexIn[(image.hex)]:::stream
-    HexOut[(output.hex)]:::stream
-
-    %% FPGA Architecture
-    subgraph FPGA_Core [Sobel Accelerator Top Level]
-        direction LR
-        
-        subgraph Line_Buffer [Circular Line Buffer]
-            LB0[Row Buffer 0]:::bram
-            LB1[Row Buffer 1]:::bram
-            WPtr[Write Pointer]:::logic
-        end
-
-        subgraph Sobel_Kernel [Convolution Pipeline]
-            Window[3x3 Window Register]:::logic
-            GradCalc[Gradient Adder Tree]:::logic
-            AbsSum[Absolute Magnitude]:::logic
-            Thresh[Threshold Comparator]:::logic
-        end
-    end
-
-    %% Data Flow Connections
-    RawImg --> PyPre --> HexIn
-    HexIn --> LB0
-    HexIn --> Window
-    
-    LB0 --> LB1
-    LB0 --> Window
-    LB1 --> Window
-    
-    WPtr -.-> LB0
-    WPtr -.-> LB1
-
-    Window --> GradCalc
-    GradCalc --> AbsSum
-    AbsSum --> Thresh
-    Thresh --> HexOut
-    
-    HexOut --> PyPost --> FinalImg
-
-```
+     PI:::input
+     EN:::control
+     WP:::control
+     RAM0:::memory
+     RAM1:::memory
+     p8:::reg
+     p7:::reg
+     p6:::reg
+     p5:::reg
+     p4:::reg
+     p3:::reg
+     p2:::reg
+     p1:::reg
+     p0:::reg
+     Gx:::math
+     Gy:::math
+     AbsX:::math
+     AbsY:::math
+     Sum:::math
+     Thresh:::math
+     PO:::input
+    classDef input fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    classDef memory fill:#d1e7dd,stroke:#0f5132,stroke-width:2px
+    classDef reg fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef math fill:#e2e3e5,stroke:#495057,stroke-width:2px
+    classDef control fill:#f8d7da,stroke:#842029,stroke-width:2px
 
 ## Technical Specifications
 
