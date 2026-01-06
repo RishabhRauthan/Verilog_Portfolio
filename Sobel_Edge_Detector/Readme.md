@@ -1,7 +1,3 @@
-Here is a professional, industry-standard `README.md` suitable for a senior engineer's portfolio. It prioritizes technical density over decoration, removes all emojis, and uses a high-contrast Mermaid diagram for architectural clarity.
-
-### **File: `README.md**`
-
 ```markdown
 # FPGA-Based Real-Time Sobel Edge Detection Accelerator
 
