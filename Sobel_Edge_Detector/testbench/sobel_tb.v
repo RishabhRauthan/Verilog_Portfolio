@@ -1,69 +1,100 @@
 `timescale 1ns / 1ps
-`default_nettype none
 
-module sobel_top #(
-    parameter DATA_WIDTH = 8,
-    parameter IMG_WIDTH  = 128
-)(
-    input  wire                  clk,
-    input  wire                  rst_n,
-    input  wire                  en,
-    input  wire [DATA_WIDTH-1:0] pixel_in,
-    
-    output wire [DATA_WIDTH-1:0] pixel_out,
-    output wire                  valid_out
-);
+module tb_sobel;
 
-    wire [DATA_WIDTH-1:0] t0, t1, t2;
+    // Parameters
+    parameter DATA_WIDTH = 8;
+    parameter IMG_WIDTH  = 128;
+    parameter IMG_HEIGHT = 128;
     
-    reg [DATA_WIDTH-1:0] p0, p1, p2; 
-    reg [DATA_WIDTH-1:0] p3, p4, p5; 
-    reg [DATA_WIDTH-1:0] p6, p7, p8; 
-    
-    wire valid_buffer;
+    // Inputs to DUT
+    reg                   clk;
+    reg                   rst_n;
+    reg                   enable;
+    reg [DATA_WIDTH-1:0]  pixel_in;
+    reg [7:0]             threshold;
 
-    line_buffer #(
+    // Outputs from DUT
+    wire [DATA_WIDTH-1:0] pixel_out;
+    wire                  valid_out;
+
+    // File Handlers
+    integer file_in, file_out;
+    integer scan_res;
+    integer i;
+
+    sobel_top #(
         .DATA_WIDTH(DATA_WIDTH),
         .IMG_WIDTH(IMG_WIDTH)
-    ) u_line_buffer (
-        .clk_i    (clk),
-        .rst_n_i  (rst_n),
-        .valid_i  (en),
-        .pixel_i  (pixel_in),
-        .tap0_o   (t0),
-        .tap1_o   (t1),
-        .tap2_o   (t2)
+    ) u_dut (
+        .clk_i       (clk),
+        .rst_n_i     (rst_n),
+        .enable_i    (enable),
+        .pixel_in    (pixel_in),
+        .threshold_i (threshold),
+        .pixel_out   (pixel_out),
+        .valid_out   (valid_out)
     );
 
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            {p0, p1, p2} <= 0;
-            {p3, p4, p5} <= 0;
-            {p6, p7, p8} <= 0;
-        end else if (en) begin
+    // Clock Generation (10ns period = 100 MHz)
+    always #5 clk = ~clk;
 
-            p8 <= t0; p7 <= p8; p6 <= p7;
+    initial begin
+        // Initialize Signals
+        clk       = 0;
+        rst_n     = 0;
+        enable    = 0;
+        pixel_in  = 0;
+        threshold = 100;
+
+
+        file_in  = $fopen("sim/image.hex", "r");
+        file_out = $fopen("sim/output.hex", "w");
+
+        if (file_in == 0) begin
+            $display("ERROR: Could not open sim/image.hex");
+            $finish;
+        end
+
+        // Reset Sequence
+        $display("Applying Reset...");
+        #20 rst_n = 1;
+        #20;
+
+        // Process Image
+        $display("Starting Processing...");
+        
+        // Loop through every pixel in the file
+        while (!$feof(file_in)) begin
+            @(posedge clk);
+            scan_res = $fscanf(file_in, "%h\n", pixel_in);
             
-            p5 <= t1; p4 <= p5; p3 <= p4;
-            
-            p2 <= t2; p1 <= p2; p0 <= p1;
+            // Only assert enable if we actually read data
+            if (scan_res == 1) begin
+                enable = 1;
+            end else begin
+                enable = 0;
+            end
+        end
+
+        // End of Stream
+        @(posedge clk);
+        enable = 0;
+        
+        // Wait for pipeline to flush
+        #500;
+        
+        // Cleanup
+        $fclose(file_in);
+        $fclose(file_out);
+        $display("Simulation Complete. Output written to sim/output.hex");
+        $finish;
+    end
+
+    always @(posedge clk) begin
+        if (valid_out) begin
+            $fwrite(file_out, "%h\n", pixel_out);
         end
     end
 
-    sobel_core #(
-        .DATA_WIDTH(DATA_WIDTH)
-    ) u_sobel_core (
-        .clk_i   (clk),
-        .rst_n_i (rst_n),
-        .valid_i (en),
-        
-        .p0_i(p0), .p1_i(p1), .p2_i(p2),
-        .p3_i(p3), .p4_i(p4), .p5_i(p5),
-        .p6_i(p6), .p7_i(p7), .p8_i(p8),
-        
-        .pixel_o (pixel_out),
-        .valid_o (valid_out)
-    );
-
 endmodule
-`default_nettype wire
