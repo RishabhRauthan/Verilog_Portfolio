@@ -2,7 +2,7 @@
 
 ![Languages](https://img.shields.io/badge/languages-Verilog%20%7C%20Python-blue)
 ![RTL Standard](https://img.shields.io/badge/standard-Verilog--2001-blue)
-![Simulation](https://img.shields.io/badge/simulation-Icarus%20%7C%20Questa%20%7C)
+![Simulation](https://img.shields.io/badge/simulation-Icarus%20%7C%20Quest-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Project Overview
