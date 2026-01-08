@@ -3,10 +3,10 @@
 ![Languages](https://img.shields.io/badge/Languages-Verilog%20%7C%20Python-blue)
 ![RTL Standard](https://img.shields.io/badge/Standard-Verilog--2001-blue)
 ![Simulation](https://img.shields.io/badge/Simulation-Icarus%20%7C%20Questa-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 1. Project Overview
-This repository hosts a synthesizable RTL implementation of a high-throughput **Sobel Edge Detection Accelerator**, designed to serve as a low-latency vision pre-processor for embedded systems.
+This project hosts a synthesizable RTL implementation of a high-throughput **Sobel Edge Detection Accelerator**, designed to serve as a low-latency vision pre-processor for embedded systems.
 In modern **Autonomous Driving (ADAS)** and **Industrial Machine Vision** pipelines, software-based edge detection introduces variable latency (jitter) due to OS interrupts and frame-buffering overhead. This hardware accelerator solves that bottleneck by offloading the pixel-intensive gradient calculation to an FPGA.
 The core utilizes a **Streaming Systolic Architecture** to process video data in real-time without external memory buffering. By performing edge extraction at the hardware level (immediately after the camera sensor), downstream CPUs are relieved of up to 90% of the computational load, allowing them to focus on high-level decision-making tasks like lane keeping or object classification.
 
