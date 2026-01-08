@@ -1,8 +1,9 @@
 # Real-Time Sobel Edge Detection Accelerator
 
-![Language](https://img.shields.io/badge/RTL-Verilog_2001-blue)
-![Platform](https://img.shields.io/badge/Platform-Xilinx%20%2F%20Intel%20FPGA-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Languages](https://img.shields.io/badge/languages-Verilog%20%7C%20Python-blue)
+![RTL Standard](https://img.shields.io/badge/standard-Verilog--2001-blue)
+![Simulation](https://img.shields.io/badge/simulation-Icarus%20%7C%20Questa%20%7C)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Project Overview
 This project implements a high-throughput, pipelined hardware accelerator for **real-time edge detection** using the Sobel operator. 
@@ -40,7 +41,7 @@ make
 
 
 
-## Manual Execution Individual steps can be triggered if debugging specific stages: ##
+## Manual Execution: ##
 
 **Generate Stimulus:**
 
