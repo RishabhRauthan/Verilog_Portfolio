@@ -1,15 +1,25 @@
 # Real-Time Sobel Edge Detection Accelerator
 
-![Language](https://img.shields.io/badge/language-Verilog-blue)
-![Platform](https://img.shields.io/badge/platform-FPGA%20%2F%20ASIC-orange)
-![Verification](https://img.shields.io/badge/verification-Python%20Co--Sim-green)
-![Status](https://img.shields.io/badge/status-In%20Development-yellow)
+![Language](https://img.shields.io/badge/RTL-Verilog_2001-blue)
+![Platform](https://img.shields.io/badge/Platform-Xilinx%20%2F%20Intel%20FPGA-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Project Overview
 This project implements a high-throughput, pipelined hardware accelerator for **real-time edge detection** using the Sobel operator. 
 Designed in **Verilog HDL**, the architecture is optimized for FPGA implementation, utilizing **inferred Block RAMs (BRAM)** for line buffering and efficient arithmetic logic for convolution.
 The system processes video data streams without CPU intervention, demonstrating advanced digital design concepts including **circular memory buffering**, **systolic arrays**, and **Python-hardware co-simulation**.
 
+
+## 2. Technical Specifications
+| Parameter | Specification |
+| :--- | :--- |
+| **Throughput** | 1 Pixel / Clock Cycle |
+| **Latency** | Line Buffer Fill + 3 Pipeline Stages |
+| **Arithmetic** | 11-bit Signed Fixed-Point |
+| **Memory** | 2 x Block RAM (Dual Port) |
+| **Input Interface** | 8-bit Grayscale (Stream) + Valid |
+| **Output Interface** | 8-bit Binary (Stream) + Valid |
+| **Dynamic Control** | Real-time Threshold Adjustment Port |
 
 ## Verification Workflow
 The verification environment utilizes a Make-driven flow for reproducible testing.
@@ -26,35 +36,30 @@ The project includes a `Makefile` to automate the stimulus generation, compilati
 Execute the complete flow (Image $\to$ Hex $\to$ RTL Sim $\to$ Output Image):
 ```bash
 make
-
-
+```
 
 
 
 ## Manual Execution Individual steps can be triggered if debugging specific stages: ##
 
-Generate Stimulus:
+**Generate Stimulus:**
 
-Bash
-
+```Bash
 python scripts/img_to_hex.py --input data/source.jpg
-Compile & Simulate:
+```
+**Compile & Simulate:**
 
-Bash
-
-iverilog -o sim/sobel_sim rtl/*.v tb/tb_sobel.v
+```Bash
+\iverilog -o sim/sobel_sim rtl/*.v tb/tb_sobel.v
 vvp sim/sobel_sim
-Analyze Output:
+```
 
-Bash
+**Analyze Output:**
+
+```Bash
 
 python scripts/hex_to_img.py --input sim/output.hex
-
-
-
-
-
-
+```
 
 
 
