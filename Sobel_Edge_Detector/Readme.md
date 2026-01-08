@@ -11,6 +11,50 @@ Designed in **Verilog HDL**, the architecture is optimized for FPGA implementati
 The system processes video data streams without CPU intervention, demonstrating advanced digital design concepts including **circular memory buffering**, **systolic arrays**, and **Python-hardware co-simulation**.
 
 
+## Verification Workflow
+The verification environment utilizes a Make-driven flow for reproducible testing.
+
+### Prerequisites
+* Icarus Verilog (`iverilog`, `vvp`)
+* Python 3.8+ (`numpy`, `opencv-python`)
+* Make
+
+### Execution Steps
+The project includes a `Makefile` to automate the stimulus generation, compilation, and analysis pipeline.
+
+**1. Run Full Verification**
+Execute the complete flow (Image $\to$ Hex $\to$ RTL Sim $\to$ Output Image):
+```bash
+make
+
+
+
+
+
+## Manual Execution Individual steps can be triggered if debugging specific stages: ##
+
+Generate Stimulus:
+
+Bash
+
+python scripts/img_to_hex.py --input data/source.jpg
+Compile & Simulate:
+
+Bash
+
+iverilog -o sim/sobel_sim rtl/*.v tb/tb_sobel.v
+vvp sim/sobel_sim
+Analyze Output:
+
+Bash
+
+python scripts/hex_to_img.py --input sim/output.hex
+
+
+
+
+
+
 
 
 
