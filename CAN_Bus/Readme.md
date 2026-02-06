@@ -1,7 +1,7 @@
 # CAN 2.0A Bus Controller IP
 **Language:** Verilog HDL (IEEE 1364-2001)  
 **Target:** FPGA (Intel/Altera, Xilinx) / ASIC  
-**Status:** 🚧 Active Development (Phase 1: PHY & Basic TX)
+**Status:** Active Development (Phase 1: PHY & Basic TX)
 
 ---
 
